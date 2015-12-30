@@ -2,7 +2,8 @@ Presario 2710 keyboard firmware
 ======================
 Reusing the eyboard from a dead Presario 2710 laptop.
 
-## GH60 Resources
+## Presario 2710 Resources
+- [Project page](http://www.obones.com/article/27)
 
 ## Build
 Move to this directory then just run `make` like:
