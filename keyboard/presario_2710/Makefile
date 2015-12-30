@@ -125,6 +125,7 @@ PS2_USE_USART = yes     # uses hardware USART engine for PS/2 signal receive(rec
 VPATH += $(TARGET_DIR)
 VPATH += $(TMK_DIR)
 
+include $(TMK_DIR)/protocol.mk
 include $(TMK_DIR)/protocol/pjrc.mk
 include $(TMK_DIR)/common.mk
 include $(TMK_DIR)/rules.mk
