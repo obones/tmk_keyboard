@@ -76,6 +76,12 @@ MCU = at90usb1286
 F_CPU = 16000000
 
 
+#
+# LUFA specific
+#
+# Target architecture (see library "Board Types" documentation).
+ARCH = AVR8
+
 # Input clock frequency.
 #     This will define a symbol, F_USB, in all source code files equal to the
 #     input clock frequency (before any prescaling is performed) in Hz. This value may
@@ -126,6 +132,6 @@ VPATH += $(TARGET_DIR)
 VPATH += $(TMK_DIR)
 
 include $(TMK_DIR)/protocol.mk
-include $(TMK_DIR)/protocol/pjrc.mk
+include $(TMK_DIR)/protocol/lufa.mk
 include $(TMK_DIR)/common.mk
 include $(TMK_DIR)/rules.mk
