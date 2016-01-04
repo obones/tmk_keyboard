@@ -20,15 +20,23 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "led.h"
 
 
-void led_set(uint8_t usb_led)
-{
-    if (usb_led & (1<<USB_LED_CAPS_LOCK)) {
-        // output low
-        DDRD |= (1<<7);
-        PORTD &= ~(1<<7);
+// Using an inline method actually saves space in the final image
+inline void setLedRegisters(uint8_t usb_led, uint8_t ledBitShift, uint8_t ledPin)
+{ 
+    if (usb_led & (1<<ledBitShift)) {
+        // output low 
+        DDRE |= (1<<ledPin);
+        PORTE &= ~(1<<ledPin);
     } else {
         // Hi-Z
-        DDRD &= ~(1<<7);
-        PORTD &= ~(1<<7);
+        DDRE &= ~(1<<ledPin);
+        PORTE &= ~(1<<ledPin);
     }
+}
+    
+void led_set(uint8_t usb_led)
+{
+    setLedRegisters(usb_led, USB_LED_NUM_LOCK, 0);
+    setLedRegisters(usb_led, USB_LED_CAPS_LOCK, 1);
+    setLedRegisters(usb_led, USB_LED_SCROLL_LOCK, 6);
 }
