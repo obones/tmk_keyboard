@@ -31,8 +31,7 @@ void backlight_init_ports(void)
   
   // Activate PLL and wait for it to lock
   PLLCSR |= (1 << PLLE);
-  while (!(PLLCSR & PLOCK)) 
-    ; 
+  loop_until_bit_is_set(PLLCSR, PLOCK); 
   
   // Set saved PWM value in OCR0A
 	OCR0A = eeprom_read_byte(&backlight_pwm_value);
