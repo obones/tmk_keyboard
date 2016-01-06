@@ -50,7 +50,8 @@ TARGET_DIR = .
 # project specific files
 SRC =	keymap_common.c \
 	matrix.c \
-	led.c
+	led.c \
+	backlight.c
 
 SRC := keymap_presario_2710.c $(SRC)
 
@@ -118,6 +119,7 @@ CONSOLE_ENABLE = yes    # Console for debug
 COMMAND_ENABLE = yes    # Commands for debug and configuration
 SLEEP_LED_ENABLE = yes  # Breathing sleep LED during USB suspend
 NKRO_ENABLE = yes	# USB Nkey Rollover(+500)
+BACKLIGHT_ENABLE = yes  # Enable keyboard backlight functionality
 PS2_MOUSE_ENABLE = yes	# PS/2 mouse(TrackPoint) support
 #PS2_USE_BUSYWAIT = yes # uses primitive reference code
 #PS2_USE_INT = yes      # uses external interrupt for falling edge of PS/2 clock pin

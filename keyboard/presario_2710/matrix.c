@@ -26,6 +26,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "debug.h"
 #include "util.h"
 #include "matrix.h"
+#include "backlight.h"
 
 
 #ifndef DEBOUNCE
@@ -57,6 +58,9 @@ uint8_t matrix_cols(void)
 
 void matrix_init(void)
 {
+    // initialize backligthing PWM
+    backlight_init_ports();
+    
     // initialize row and col
     unselect_rows();
     init_cols();
