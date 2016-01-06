@@ -33,8 +33,11 @@ void backlight_init_ports(void)
   PLLCSR |= (1 << PLLE);
   loop_until_bit_is_set(PLLCSR, PLOCK); 
   
-  // Set saved PWM value in OCR0A
-	OCR0A = eeprom_read_byte(&backlight_pwm_value);
+  // Set saved PWM value in OCR0A, ensuring it is within range
+  uint8_t savedPWM = eeprom_read_byte(&backlight_pwm_value);
+  if (savedPWM < backlight_pwm_min || savedPWM > backlight_pwm_max)
+    savedPWM = backlight_pwm_max;
+	OCR0A = savedPWM;
 
   // Set Fast PWM mode with TOP set to MAX (0xFF) value (WGM2:0 = 3)
   TCCR0B &= ~(1 << WGM02);  
