@@ -4,9 +4,9 @@
 #define KC_SQR KC_GRAVE
 #define KC_LTGT KC_NONUS_BSLASH
 #define KC_EXEC KC_EXECUTE
-#define KC_SCRS KC_TRNS
-#define KC_BLDN KC_FN2
-#define KC_BLUP KC_FN3
+#define KC_SCRS KC_FN5
+#define KC_BLDN KC_FN3
+#define KC_BLUP KC_FN4
 
 const uint8_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     /* 0: default, French azerty. Note that qwerty is used here because of USB recommandations */
@@ -74,10 +74,60 @@ const uint8_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         TRNS,TRNS,TRNS,TRNS,TRNS,     TRNS,        TRNS,TRNS,TRNS,TRNS,          TRNS,       \
                                                                             TRNS,TRNS,TRNS   ),                                                                          
 };
+
+enum macro_id {
+    NUM_LOCK,
+};
+
+enum function_id {
+    SELECT_SOURCE,
+};
+
 const uint16_t PROGMEM fn_actions[] = {
     /* Presario 2710 Layout */
     [0] = ACTION_LAYER_MOMENTARY(1),  // to Fn overlay
-    [1] = ACTION_LAYER_TOGGLE(2),     // to Numlock overlay
-    [2] = ACTION_BACKLIGHT_DECREASE(),
-    [3] = ACTION_BACKLIGHT_INCREASE(),
+    [1] = ACTION_MACRO(NUM_LOCK),     // macro to press NumLock key then FN2
+    [2] = ACTION_LAYER_TOGGLE(2),     // to Numlock overlay
+    [3] = ACTION_BACKLIGHT_DECREASE(),
+    [4] = ACTION_BACKLIGHT_INCREASE(),
+    [5] = ACTION_FUNCTION(SELECT_SOURCE)
 };
+
+/*
+ * Macro definition
+ */
+const macro_t *action_get_macro(keyrecord_t *record, uint8_t id, uint8_t opt)
+{
+    switch (id) {
+        case NUM_LOCK:
+            return (record->event.pressed ?
+                    MACRO( I(50), D(NUMLOCK), U(NUMLOCK), D(FN2), END ) :
+                    MACRO( U(FN2), END ));
+    }
+    return MACRO_NONE;
+}
+
+/*
+ * user defined action function
+ */
+void action_function(keyrecord_t *record, uint8_t id, uint8_t opt)
+{
+    if (record->event.pressed) dprint("P"); else dprint("R");
+    dprintf("%d", record->tap.count);
+    if (record->tap.interrupted) dprint("i");
+    dprint("\n");
+
+    switch (id) {
+        case SELECT_SOURCE:
+            if (record->event.pressed) {
+              // output low 
+              DDRA |= _BV(PA0);
+              PORTA &= ~_BV(PA0);
+            } else {
+              // Hi-Z
+              DDRA &= ~_BV(PA0);
+              PORTA &= ~_BV(PA0);
+            }
+            break;
+    }
+}
