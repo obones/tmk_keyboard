@@ -16,13 +16,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 #include <avr/io.h>
-#include <avr/eeprom.h>
 
 const uint8_t backlight_pwm_max = 153;
 const uint8_t backlight_pwm_min = 63;
 const uint8_t backlight_pwm_step = 6;
-
-EEMEM uint8_t backlight_pwm_value;
 
 void backlight_init_ports(void)
 {
@@ -33,11 +30,8 @@ void backlight_init_ports(void)
   PLLCSR |= (1 << PLLE);
   loop_until_bit_is_set(PLLCSR, PLOCK); 
   
-  // Set saved PWM value in OCR0A, ensuring it is within range
-  uint8_t savedPWM = eeprom_read_byte(&backlight_pwm_value);
-  if (savedPWM < backlight_pwm_min || savedPWM > backlight_pwm_max)
-    savedPWM = backlight_pwm_max;
-	OCR0A = savedPWM;
+  // Set default PWM value in OCR0A, the saved value will be restored by a call to backlight_set via backlight_init inside keyboard_init
+	OCR0A = backlight_pwm_min;
 
   // Set Fast PWM mode with TOP set to MAX (0xFF) value (WGM2:0 = 3)
   TCCR0B &= ~(1 << WGM02);  
@@ -53,9 +47,8 @@ void backlight_init_ports(void)
 
 void backlight_set(uint8_t level)
 {
-   // set and save new PWM duty cycle
-   uint8_t newPWM = backlight_pwm_min + level * backlight_pwm_step;
-   OCR0A = newPWM;
-   eeprom_write_byte(&backlight_pwm_value, newPWM);                                                 
+   // set new PWM duty cycle
+   // the level is saved in eeprom by the various backlight functions
+   OCR0A = backlight_pwm_min + level * backlight_pwm_step;
 }
 
