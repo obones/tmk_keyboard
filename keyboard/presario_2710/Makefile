@@ -51,7 +51,7 @@ TARGET_DIR = .
 SRC =	keymap_common.c \
 	matrix.c \
 	led.c \
-	backlight.c
+	backlight_presario_2710.c
 
 SRC := keymap_presario_2710.c $(SRC)
 

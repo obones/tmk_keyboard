@@ -26,7 +26,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "debug.h"
 #include "util.h"
 #include "matrix.h"
-#include "backlight.h"
+#include "backlight_presario_2710.h"
 
 
 #ifndef DEBOUNCE

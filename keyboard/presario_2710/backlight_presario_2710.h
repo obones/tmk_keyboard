@@ -15,9 +15,9 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef BACKLIGHT_H
-#define BACKLIGHT_H
+#ifndef BACKLIGHT_PRESARIO_2710_H
+#define BACKLIGHT_PRESARIO_2710_H
 
 void backlight_init_ports(void);
 
-#endif // BACKLIGHT_H
+#endif // BACKLIGHT_PRESARIO_2710_H
