@@ -5,8 +5,8 @@
 #define KC_LTGT KC_NONUS_BSLASH
 #define KC_EXEC KC_EXECUTE
 #define KC_SCRS KC_TRNS
-#define KC_BLDN KC_TRNS
-#define KC_BLUP KC_TRNS
+#define KC_BLDN KC_FN2
+#define KC_BLUP KC_FN3
 
 const uint8_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     /* 0: default, French azerty. Note that qwerty is used here because of USB recommandations */
@@ -78,4 +78,6 @@ const uint16_t PROGMEM fn_actions[] = {
     /* Presario 2710 Layout */
     [0] = ACTION_LAYER_MOMENTARY(1),  // to Fn overlay
     [1] = ACTION_LAYER_TOGGLE(2),     // to Numlock overlay
+    [2] = ACTION_BACKLIGHT_DECREASE(),
+    [3] = ACTION_BACKLIGHT_INCREASE(),
 };
