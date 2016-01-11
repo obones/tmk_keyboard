@@ -1,5 +1,5 @@
 /*
-Copyright 2014 Ralf Schmitt <ralf@bunkertor.net>
+Copyright 2016 Olivier Sannier <obones@gmail.com>
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
