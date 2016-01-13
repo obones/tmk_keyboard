@@ -27,6 +27,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 const uint8_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     /* 0: default, French azerty. Note that qwerty is used here because of USB recommandations */
     KEYMAP(
+                                   WHOM,MAIL,WSCH,   MSEL,VOLD,VOLU,                         \
         ESC, F1,  F2,  F3,  F4,  F5,  F6,  F7,  F8,  F9,  F10, F11, F12,PSCR,SLCK,PAUS, DEL, \
         SQR, 1,   2,   3,    4,   5,    6,    7,   8,    9,   0,    MINS,EQL,     BSPC,HOME, \
         TAB,  Q,   W,   E,    R,   T,    Y,    U,   I,    O,   P,   LBRC,RBRC,    STAR,PGUP, \
@@ -36,6 +37,8 @@ const uint8_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                                                                             LEFT,DOWN,RGHT   ),                                                                          
     /* 1: Fn
      * ,-------------------------------------------------------------------.
+     * |~~~~~~~~~~~~~~~~~~~~~~|  |  |  |~~~~|  |  |  |~~~~~~~~~~~~~~~~~~~~~|
+     * |-------------------------------------------------------------------|
      * |   |Exe|Hlp|Src|Slp|   |   |LDn|LUp|Ply|Stp|Prv|Nxt|   |NmL|   |   |
      * |-------------------------------------------------------------------|
      * |   |   |   |   |    |   |   |    |    |   |    |   |   |       |   |
@@ -56,6 +59,7 @@ const uint8_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
      * NmL: to numlock overlay (and activate num lock status)
      */
     KEYMAP(
+                                   TRNS,TRNS,TRNS,   TRNS,TRNS,TRNS,                         \
         TRNS,EXEC,HELP,SCRS,SLEP,TRNS,TRNS,BLDN,BLUP,MPLY,MSTP,MPRV,MNXT,TRNS,FN1,TRNS,TRNS, \
         TRNS,TRNS,TRNS,TRNS, TRNS,TRNS, TRNS, TRNS,TRNS, TRNS,TRNS, TRNS,TRNS,    TRNS,TRNS, \
         TRNS, TRNS,TRNS,TRNS, TRNS,TRNS, TRNS, TRNS,TRNS, TRNS,TRNS, TRNS,TRNS,   TRNS,TRNS, \
@@ -65,6 +69,8 @@ const uint8_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                                                                             TRNS,TRNS,TRNS   ),                                                                          
     /* 2: Numlock
      * ,-------------------------------------------------------------------.
+     * |~~~~~~~~~~~~~~~~~~~~~~|  |  |  |~~~~|  |  |  |~~~~~~~~~~~~~~~~~~~~~|
+     * |-------------------------------------------------------------------|
      * |   |   |   |   |   |   |   |   |   |   |   |   |   |   |NmL|   |   |
      * |-------------------------------------------------------------------|
      * |   |   |   |   |    |   |   |  7 |  8 | 9 |  * |   |   |       |   |
@@ -82,6 +88,7 @@ const uint8_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
      * NmL: back to default overlay (and deactivate num lock status)
      */
     KEYMAP(
+                                   TRNS,TRNS,TRNS,   TRNS,TRNS,TRNS,                         \
         TRNS,TRNS,TRNS,TRNS,TRNS,TRNS,TRNS,TRNS,TRNS,TRNS,TRNS,TRNS,TRNS,TRNS,FN1,TRNS,TRNS, \
         TRNS,TRNS,TRNS,TRNS, TRNS,TRNS, TRNS,   P7,  P8,   P9,PAST, TRNS,TRNS,    TRNS,TRNS, \
         TRNS, TRNS,TRNS,TRNS, TRNS,TRNS, TRNS,   P4,  P5,   P6,PMNS, TRNS,TRNS,   TRNS,TRNS, \
