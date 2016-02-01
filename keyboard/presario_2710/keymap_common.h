@@ -52,7 +52,7 @@ extern const uint16_t fn_actions[];
     { KC_##K30, KC_NO,    KC_##K32, KC_##K33, KC_NO,    KC_##K35, KC_##K36, KC_##K37, KC_NO,    KC_##K39, KC_##K3A, KC_NO,    KC_##K3C, KC_##K3D, KC_##K3E, KC_##K3F }, \
     { KC_##K40, KC_NO,    KC_##K42, KC_##K43, KC_NO,    KC_##K45, KC_##K46, KC_##K47, KC_NO,    KC_##K49, KC_##K4A, KC_NO,    KC_##K4C, KC_##K4D, KC_##K4E, KC_##K4F }, \
     { KC_##K50, KC_NO,    KC_##K52, KC_##K53, KC_NO,    KC_##K55, KC_##K56, KC_##K57, KC_NO,    KC_##K59, KC_##K5A, KC_NO,    KC_##K5C, KC_##K5D, KC_##K5E, KC_##K5F }, \
-    { KC_NO,    KC_##K61, KC_##K62, KC_##K63, KC_NO,    KC_##K65, KC_##K66, KC_##K67, KC_##K68, KC_##K69, KC_NO,    KC_NO,    KC_##K6C, KC_##K6D, KC_##K6E, KC_##F6F }, \
+    { KC_NO,    KC_##K61, KC_##K62, KC_##K63, KC_NO,    KC_##K65, KC_##K66, KC_##K67, KC_##K68, KC_##K69, KC_NO,    KC_NO,    KC_##K6C, KC_##K6D, KC_##K6E, KC_##K6F }, \
     { KC_NO,    KC_##K71, KC_##K72, KC_##K73, KC_##K74, KC_##K75, KC_##K76, KC_##K77, KC_##K78, KC_##K79, KC_NO,    KC_##K7B, KC_NO,    KC_##K7D, KC_##K7E, KC_##K7F }, \
 }
 
