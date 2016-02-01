@@ -18,6 +18,26 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #ifndef CONFIG_H
 #define CONFIG_H
 
+/* Pin assignments */
+/* 
+  PA0  Source select       PB0  Out8                PC0  In0
+  PA1                      PB1  Out9                PC1  In1
+  PA2                      PB2  Out10               PC2  In2
+  PA3                      PB3  Out11               PC3  In3
+  PA4                      PB4  Out12               PC4  In4
+  PA5                      PB5  Out13               PC5  In5
+  PA6                      PB6  Out14               PC6  In6
+  PA7                      PB7  Backlight PWM       PC7  In7
+
+  PD0                      PE0  Num lock LED        PF0  Out0
+  PD1                      PE1  Caps lock LED       PF1  Out1
+  PD2  PS/2 Data           PE2  ALE                 PF2  Out2
+  PD3                                               PF3  Out3
+  PD4                      PE4                      PF4  Out4
+  PD5  PS/2 Clock          PE5                      PF5  Out5
+  PD6  (Teensy led)        PE6  Scroll lock LED     PF6  Out6
+  PD7                      PE7  Out15               PF7  Out7
+*/
 
 /* USB Device descriptor parameter */
 #define VENDOR_ID       0xFEED
