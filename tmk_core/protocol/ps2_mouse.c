@@ -32,6 +32,10 @@ static report_mouse_t mouse_report = {};
 
 static void print_usb_data(void);
 
+static bool supports_wheel = false;
+static bool supports_five_buttons = false;
+uint8_t ps2_mouse_set_scroll_mode(uint8_t s1, uint8_t s2, uint8_t s3);
+
 
 /* supports only 3 button mouse at this time */
 uint8_t ps2_mouse_init(void) {
@@ -55,6 +59,16 @@ uint8_t ps2_mouse_init(void) {
     rcv = ps2_host_recv_response();
     print("ps2_mouse_init: read DevID: ");
     phex(rcv); phex(ps2_error); print("\n");
+    
+    // Try to set "Microsoft scrolling mouse" modes:
+    // 
+    // Set sample mode three times with values 200, 100, 80 then ask for Id. 
+    // If answer is 3, then wheel is supported, four bytes will be received instead of three
+    //
+    // Set again sample mode three times with values 200, 200, 80 then ask for Id. 
+    // If answer is 4, then wheel and five buttons are supported, four bytes will be received instead of three
+    supports_wheel = ps2_mouse_set_scroll_mode(200, 100, 80) == 3;
+    supports_five_buttons = ps2_mouse_set_scroll_mode(200, 200, 80) == 4;
 
     // send Set Remote mode
     rcv = ps2_host_send(0xF0);
@@ -73,14 +87,36 @@ void ps2_mouse_task(void)
     enum { SCROLL_NONE, SCROLL_BTN, SCROLL_SENT };
     static uint8_t scroll_state = SCROLL_NONE;
     static uint8_t buttons_prev = 0;
+    static uint8_t wheel_data_prev = 0;
 
     /* receives packet from mouse */
     uint8_t rcv;
+    uint8_t wheel_data = 0;
     rcv = ps2_host_send(PS2_MOUSE_READ_DATA);
     if (rcv == PS2_ACK) {
         mouse_report.buttons = ps2_host_recv_response();
         mouse_report.x = ps2_host_recv_response();
         mouse_report.y = ps2_host_recv_response();
+        if (supports_wheel || supports_five_buttons)
+        {
+            wheel_data = ps2_host_recv_response();
+            mouse_report.h = 0;
+            mouse_report.v = wheel_data & PS2_MOUSE_WHEEL_MASK;
+            
+            // sign extend the wheel value
+            mouse_report.v = mouse_report.v << PS2_MOUSE_WHEEL_BITS >> PS2_MOUSE_WHEEL_BITS;
+            
+            // horizontal wheel is always a multiple of two. Dividing by 2 makes sure that -128 never gets sent as the USB expects -127..127
+            if ((mouse_report.v & 1) == 0)
+            {
+                mouse_report.h = mouse_report.v >> 1;
+                mouse_report.v = 0;
+            }
+        }
+        else
+        {
+            mouse_report.v = mouse_report.h = 0;
+        }  
     } else {
         if (debug_mouse) print("ps2_mouse: fail to get mouse packet\n");
         return;
@@ -89,21 +125,25 @@ void ps2_mouse_task(void)
         print("ps2_mouse raw: [");
         phex(mouse_report.buttons); print("|");
         print_hex8((uint8_t)mouse_report.x); print(" ");
-        print_hex8((uint8_t)mouse_report.y); print("]\n");
+        print_hex8((uint8_t)mouse_report.y); print(" ");
+        print_hex8(wheel_data); print("]\n");
 
-    /* if mouse moves or buttons state changes */
+    /* if mouse moves, buttons state changes or wheel rolls */
     if (mouse_report.x || mouse_report.y ||
-            ((mouse_report.buttons ^ buttons_prev) & PS2_MOUSE_BTN_MASK)) {
+            ((mouse_report.buttons ^ buttons_prev) & PS2_MOUSE_BTN_MASK) ||
+            (wheel_data != wheel_data_prev)) {
 
 #ifdef PS2_MOUSE_DEBUG
         print("ps2_mouse raw: [");
         phex(mouse_report.buttons); print("|");
         print_hex8((uint8_t)mouse_report.x); print(" ");
-        print_hex8((uint8_t)mouse_report.y); print("]\n");
+        print_hex8((uint8_t)mouse_report.y); print(" ");
+        print_hex8(wheel_data); print("]\n");
 #endif
 
         buttons_prev = mouse_report.buttons;
-
+        wheel_data_prev = wheel_data;
+        
         // PS/2 mouse data is '9-bit integer'(-256 to 255) which is comprised of sign-bit and 8-bit value.
         // bit: 8    7 ... 0
         //      sign \8-bit/
@@ -118,8 +158,10 @@ void ps2_mouse_task(void)
                           ((!Y_IS_OVF && -127 <= mouse_report.y && mouse_report.y <= -1) ?  mouse_report.y : -127) :
                           ((!Y_IS_OVF && 0 <= mouse_report.y && mouse_report.y <= 127) ? mouse_report.y : 127);
 
-        // remove sign and overflow flags
+        // remove sign and overflow flags, then add button 4 and 5 if supported
         mouse_report.buttons &= PS2_MOUSE_BTN_MASK;
+        if (!supports_five_buttons)
+            mouse_report.buttons |= (wheel_data & PS2_MOUSE_BTN_4_5_MASK) >> 1;  
 
         // invert coordinate of y to conform to USB HID mouse
         mouse_report.y = -mouse_report.y;
@@ -186,6 +228,35 @@ static void print_usb_data(void)
     print_hex8((uint8_t)mouse_report.h); print("]\n");
 }
 
+uint8_t ps2_mouse_set_scroll_mode(uint8_t s1, uint8_t s2, uint8_t s3)
+{
+    uint8_t rcv;
+
+    rcv = ps2_host_send(PS2_MOUSE_SET_SAMPLE_RATE);
+    print("ps2_mouse_set_scroll_mode: scrolling mouse: set sample rate command: ");
+    phex(rcv); phex(ps2_error); print("\n");
+    rcv = ps2_host_send(s1);
+    print("ps2_mouse_set_scroll_mode: scrolling mouse: set sample rate value 1: ");
+    phex(rcv); phex(ps2_error); print("\n");
+    rcv = ps2_host_send(PS2_MOUSE_SET_SAMPLE_RATE);
+    print("ps2_mouse_set_scroll_mode: scrolling mouse: set sample rate command: ");
+    phex(rcv); phex(ps2_error); print("\n");
+    rcv = ps2_host_send(s2);
+    print("ps2_mouse_set_scroll_mode: scrolling mouse: set sample rate value 2: ");
+    phex(rcv); phex(ps2_error); print("\n");
+    rcv = ps2_host_send(PS2_MOUSE_SET_SAMPLE_RATE);
+    print("ps2_mouse_set_scroll_mode: scrolling mouse: set sample rate command: ");
+    phex(rcv); phex(ps2_error); print("\n");
+    rcv = ps2_host_send(s3);
+    print("ps2_mouse_set_scroll_mode: scrolling mouse: set sample rate value 3: ");
+    phex(rcv); phex(ps2_error); print("\n");
+    rcv = ps2_host_send(PS2_MOUSE_GET_DEVICE_ID);
+    print("ps2_mouse_set_scroll_mode: scrolling mouse: get device id: ");
+    phex(rcv); phex(ps2_error); print("\n");
+    
+    return rcv;
+}
+
 
 /* PS/2 Mouse Synopsis
  * http://www.computer-engineering.org/ps2mouse/
@@ -217,4 +288,7 @@ static void print_usb_data(void)
  *    0|Yovflw  Xovflw  Ysign   Xsign   1       Middle  Right   Left
  *    1|                    X movement
  *    2|                    Y movement
+ *    3|                Btn5    Btn4          Z movement(-8 - 7)
+ *    
+ *  Note that fourth byte is only sent when mouse supports "wheel mode"  
  */

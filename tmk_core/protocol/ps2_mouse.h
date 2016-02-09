@@ -20,7 +20,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include <stdbool.h>
 
-#define PS2_MOUSE_READ_DATA     0xEB
+#define PS2_MOUSE_SET_SAMPLE_RATE   0xF3
+#define PS2_MOUSE_GET_DEVICE_ID     0xF2
+#define PS2_MOUSE_READ_DATA         0xEB
 
 /*
  * Data format:
@@ -29,15 +31,23 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *    0|Yovflw  Xovflw  Ysign   Xsign   1       Middle  Right   Left
  *    1|                    X movement(0-255)
  *    2|                    Y movement(0-255)
+ *    3|                Btn5    Btn4          Z movement(-8 - 7)
+ *    
+ *  Note that fourth byte is only sent when mouse supports "wheel mode"  
  */
 #define PS2_MOUSE_BTN_MASK      0x07
 #define PS2_MOUSE_BTN_LEFT      0
 #define PS2_MOUSE_BTN_RIGHT     1
 #define PS2_MOUSE_BTN_MIDDLE    2
+#define PS2_MOUSE_BTN_FOURTH    4
+#define PS2_MOUSE_BTN_FIFTH     5
 #define PS2_MOUSE_X_SIGN        4
 #define PS2_MOUSE_Y_SIGN        5
 #define PS2_MOUSE_X_OVFLW       6
 #define PS2_MOUSE_Y_OVFLW       7
+#define PS2_MOUSE_WHEEL_BITS    4
+#define PS2_MOUSE_WHEEL_MASK    ((1 << PS2_MOUSE_WHEEL_BITS) - 1)
+#define PS2_MOUSE_BTN_4_5_MASK  0x30
 
 
 /*
