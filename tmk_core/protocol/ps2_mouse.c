@@ -121,25 +121,20 @@ void ps2_mouse_task(void)
         if (debug_mouse) print("ps2_mouse: fail to get mouse packet\n");
         return;
     }
-        xprintf("%ud ", timer_read());
-        print("ps2_mouse raw: [");
-        phex(mouse_report.buttons); print("|");
-        print_hex8((uint8_t)mouse_report.x); print(" ");
-        print_hex8((uint8_t)mouse_report.y); print(" ");
-        print_hex8(wheel_data); print("]\n");
+    
+#ifdef PS2_MOUSE_DEBUG
+    xprintf("%ud ", timer_read());           
+    print("ps2_mouse raw: [");
+    phex(mouse_report.buttons); print("|");
+    print_hex8((uint8_t)mouse_report.x); print(" ");
+    print_hex8((uint8_t)mouse_report.y); print(" ");
+    print_hex8(wheel_data); print("]\n");
+#endif
 
     /* if mouse moves, buttons state changes or wheel rolls */
     if (mouse_report.x || mouse_report.y ||
             ((mouse_report.buttons ^ buttons_prev) & PS2_MOUSE_BTN_MASK) ||
             (wheel_data != wheel_data_prev)) {
-
-#ifdef PS2_MOUSE_DEBUG
-        print("ps2_mouse raw: [");
-        phex(mouse_report.buttons); print("|");
-        print_hex8((uint8_t)mouse_report.x); print(" ");
-        print_hex8((uint8_t)mouse_report.y); print(" ");
-        print_hex8(wheel_data); print("]\n");
-#endif
 
         buttons_prev = mouse_report.buttons;
         wheel_data_prev = wheel_data;
