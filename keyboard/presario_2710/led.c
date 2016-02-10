@@ -28,9 +28,9 @@ inline void setLedRegisters(uint8_t usb_led, uint8_t ledBitShift, uint8_t ledPin
         DDRE |= (1<<ledPin);
         PORTE &= ~(1<<ledPin);
     } else {
-        // Hi-Z
-        DDRE &= ~(1<<ledPin);
-        PORTE &= ~(1<<ledPin);
+        // output high
+        DDRE |= (1<<ledPin);
+        PORTE |= (1<<ledPin);
     }
 }
     
