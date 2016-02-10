@@ -57,9 +57,12 @@ Note however that qwerty is used in the source because of USB recommandations.
     |~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~|   |   |    |
     `-------------------------------------------------------------------'
      
-Src: Screen input selection (to be implemented)     
+Src: Screen input selection (to be implemented)  
+   
 LDn:  backlight down one level
+
 LUp: backlight up one level
+
 NmL: to numlock overlay (and activate num lock status)
 
 ### 1.2 Numlock layer
