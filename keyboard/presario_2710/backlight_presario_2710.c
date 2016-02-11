@@ -17,9 +17,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include <avr/io.h>
 
-const uint8_t backlight_pwm_max = 153;
-const uint8_t backlight_pwm_min = 63;
-const uint8_t backlight_pwm_step = 6;
+const uint8_t backlight_pwm_max = 255;
+const uint8_t backlight_pwm_min = 105;
+const uint8_t backlight_pwm_step = 10;
 
 void backlight_init_ports(void)
 {
