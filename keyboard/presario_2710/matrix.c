@@ -62,6 +62,10 @@ void matrix_init(void)
     // initialize backligthing PWM
     backlight_init_ports();
     
+    // initialize Port A for video adapter control
+    DDRA = 0b00000111;
+    PORTA = 0b00000000;    
+    
     // initialize row and col
     unselect_rows();
     init_cols();

@@ -52,18 +52,28 @@ Note however that qwerty is used in the source because of USB recommandations.
     |-------------------------------------------------------------------|
     |         |   |   |   |    |    |   |   |    |    |   |         |   |
     |-------------------------------------------------------------------|
-    |   |   |   |   |   |                |   |   |   |   |~~~~~|   |~~~~|
+    |   |   |   |   |   |                |   |   |   |VMn|~~~~~|VCu|~~~~|
     |-------------------------------------------------------------------|
-    |~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~|   |   |    |
+    |~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~|VVd|VCd|VVup|
     `-------------------------------------------------------------------'
      
-Src: Screen input selection (to be implemented)  
+Src: Press video converter input key
    
 LDn:  backlight down one level
 
 LUp: backlight up one level
 
 NmL: to numlock overlay (and activate num lock status)
+
+VMn: Press video converter menu key
+
+VCu: Press video converter channel up key
+
+VCd: Press video converter channel down key
+
+VVu: Press video converter volume up key
+
+VVd: Press video converter volume down key
 
 ### 1.2 Numlock layer
     ,-------------------------------------------------------------------.

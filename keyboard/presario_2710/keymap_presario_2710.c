@@ -20,9 +20,15 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define KC_SQR KC_GRAVE
 #define KC_LTGT KC_NONUS_BSLASH
 #define KC_EXEC KC_EXECUTE
-#define KC_SCRS KC_FN5
 #define KC_BLDN KC_FN3
 #define KC_BLUP KC_FN4
+#define KC_SCRS KC_FN5
+#define KC_VMEN KC_FN6
+#define KC_VCHU KC_FN7
+#define KC_VCHD KC_FN8
+#define KC_VVLU KC_FN9
+#define KC_VVLD KC_FN10
+#define KC_VPWR KC_FN11
 
 const uint8_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     /* 0: default, French azerty. Note that qwerty is used here because of USB recommandations */
@@ -49,14 +55,19 @@ const uint8_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
      * |-------------------------------------------------------------------|
      * |         |   |   |   |    |    |   |   |    |    |   |         |   |
      * |-------------------------------------------------------------------|
-     * |   |   |   |   |   |                |   |   |   |   |~~~~~|   |~~~~|
+     * |   |   |   |   |   |                |   |   |   |VMn|~~~~~|VCu|~~~~|
      * |-------------------------------------------------------------------|
-     * |~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~|   |   |    |
+     * |~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~|VVd|VCd|VVup|
      * `-------------------------------------------------------------------'
-     * Src: Screen input selection (to be implemented)     
+     * Src: Press video converter input key
      * LDn:  backlight down one level
      * LUp: backlight up one level
      * NmL: to numlock overlay (and activate num lock status)
+     * VMn: Press video converter menu key
+     * VCu: Press video converter channel up key
+     * VCd: Press video converter channel down key
+     * VVu: Press video converter volume up key
+     * VVd: Press video converter volume down key
      */
     KEYMAP(
                                    TRNS,TRNS,TRNS,   TRNS,TRNS,TRNS,                         \
@@ -65,8 +76,8 @@ const uint8_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         TRNS, TRNS,TRNS,TRNS, TRNS,TRNS, TRNS, TRNS,TRNS, TRNS,TRNS, TRNS,TRNS,   TRNS,TRNS, \
         TRNS,  TRNS,TRNS,TRNS, TRNS, TRNS,TRNS, TRNS,TRNS, TRNS, TRNS,TRNS,       TRNS,TRNS, \
         TRNS,   TRNS,TRNS,TRNS, TRNS, TRNS, TRNS,TRNS, TRNS, TRNS, TRNS,          TRNS,TRNS, \
-        TRNS,TRNS,TRNS,TRNS,TRNS,     TRNS,        TRNS,TRNS,TRNS,TRNS,          TRNS,       \
-                                                                            TRNS,TRNS,TRNS   ),                                                                          
+        TRNS,TRNS,TRNS,TRNS,TRNS,     TRNS,        TRNS,TRNS,TRNS,VMEN,          VCHU,       \
+                                                                            VVLU,VCHD,VVLD   ),                                                                          
     /* 2: Numlock
      * ,-------------------------------------------------------------------.
      * |~~~~~~~~~~~~~~~~~~~~~~|  |  |  |~~~~|  |  |  |~~~~~~~~~~~~~~~~~~~~~|
@@ -103,8 +114,18 @@ enum macro_id {
 };
 
 enum function_id {
-    SELECT_SOURCE,
+    VIDEO_MENU,
+    VIDEO_CH_UP,
+    VIDEO_CH_DOWN,
+    VIDEO_VOL_UP,
+    VIDEO_VOL_DOWN,
+    VIDEO_INPUT,
+    VIDEO_POWER,
 };
+
+#define VIDEO_MIN VIDEO_MENU
+#define VIDEO_MAX VIDEO_POWER
+#define VIDEO_MASK 0x07
 
 const uint16_t PROGMEM fn_actions[] = {
     /* Presario 2710 Layout */
@@ -113,7 +134,13 @@ const uint16_t PROGMEM fn_actions[] = {
     [2] = ACTION_LAYER_TOGGLE(2),     // to Numlock overlay
     [3] = ACTION_BACKLIGHT_DECREASE(),
     [4] = ACTION_BACKLIGHT_INCREASE(),
-    [5] = ACTION_FUNCTION(SELECT_SOURCE)
+    [5] = ACTION_FUNCTION(VIDEO_INPUT),
+    [6] = ACTION_FUNCTION(VIDEO_MENU),
+    [7] = ACTION_FUNCTION(VIDEO_CH_UP),
+    [8] = ACTION_FUNCTION(VIDEO_CH_DOWN),
+    [9] = ACTION_FUNCTION(VIDEO_VOL_UP),
+    [10] = ACTION_FUNCTION(VIDEO_VOL_DOWN),
+    [11] = ACTION_FUNCTION(VIDEO_POWER),
 };
 
 /*
@@ -139,18 +166,11 @@ void action_function(keyrecord_t *record, uint8_t id, uint8_t opt)
     dprintf("%d", record->tap.count);
     if (record->tap.interrupted) dprint("i");
     dprint("\n");
-
-    switch (id) {
-        case SELECT_SOURCE:
-            if (record->event.pressed) {
-              // output low 
-              DDRA |= _BV(PA0);
-              PORTA &= ~_BV(PA0);
-            } else {
-              // Hi-Z
-              DDRA &= ~_BV(PA0);
-              PORTA &= ~_BV(PA0);
-            }
-            break;
+    
+    if (id >= VIDEO_MIN && id <= VIDEO_MAX)
+    {
+        PORTA &= ~VIDEO_MASK;
+        if (record->event.pressed)
+            PORTA |= id & VIDEO_MASK;
     }
 }
