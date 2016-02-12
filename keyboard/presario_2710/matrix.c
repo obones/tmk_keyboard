@@ -27,6 +27,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "debug.h"
 #include "util.h"
 #include "matrix.h"
+#include "host.h"
+#include "action_layer.h"
+#include "led.h"
 #include "backlight_presario_2710.h"
 
 
@@ -78,6 +81,13 @@ void matrix_init(void)
         matrix[i] = 0;
         matrix_debouncing[i] = 0;
     }
+}
+
+void matrix_startup(void)
+{
+    // If NumLock is on when plugging us, directly go to the NumLock layer
+    if (host_keyboard_leds() & (1<<USB_LED_NUM_LOCK)) 
+        layer_on(2);    
 }
 
 uint8_t matrix_scan(void)
