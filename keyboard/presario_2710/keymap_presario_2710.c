@@ -14,6 +14,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+#include "action_layer.h"
 #include "keymap_common.h"
 
 #define KC_STAR KC_NONUS_HASH
@@ -100,17 +101,13 @@ const uint8_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
      */
     KEYMAP(
                                    TRNS,TRNS,TRNS,   TRNS,TRNS,TRNS,                         \
-        TRNS,TRNS,TRNS,TRNS,TRNS,TRNS,TRNS,TRNS,TRNS,TRNS,TRNS,TRNS,TRNS,TRNS,FN1,TRNS,TRNS, \
+        TRNS,TRNS,TRNS,TRNS,TRNS,TRNS,TRNS,TRNS,TRNS,TRNS,TRNS,TRNS,TRNS,TRNS,FN2,TRNS,TRNS, \
         TRNS,TRNS,TRNS,TRNS, TRNS,TRNS, TRNS,   P7,  P8,   P9,PAST, TRNS,TRNS,    TRNS,TRNS, \
         TRNS, TRNS,TRNS,TRNS, TRNS,TRNS, TRNS,   P4,  P5,   P6,PMNS, TRNS,TRNS,   TRNS,TRNS, \
         TRNS,  TRNS,TRNS,TRNS, TRNS, TRNS,TRNS,   P1,  P2,   P3, PPLS,TRNS,       TRNS,TRNS, \
         TRNS,   TRNS,TRNS,TRNS, TRNS, TRNS, TRNS,  P0, TRNS, PDOT, PSLS,          TRNS,TRNS, \
         TRNS,TRNS,TRNS,TRNS,TRNS,     TRNS,        TRNS,TRNS,TRNS,TRNS,          TRNS,       \
                                                                             TRNS,TRNS,TRNS   ),                                                                          
-};
-
-enum macro_id {
-    NUM_LOCK,
 };
 
 enum function_id {
@@ -121,6 +118,8 @@ enum function_id {
     VIDEO_VOL_DOWN,
     VIDEO_INPUT,
     VIDEO_POWER,
+    NUM_LOCK_ON,
+    NUM_LOCK_OFF,
 };
 
 #define VIDEO_MIN VIDEO_MENU
@@ -130,8 +129,8 @@ enum function_id {
 const uint16_t PROGMEM fn_actions[] = {
     /* Presario 2710 Layout */
     [0] = ACTION_LAYER_MOMENTARY(1),  // to Fn overlay
-    [1] = ACTION_MACRO(NUM_LOCK),     // macro to press NumLock key then FN2
-    [2] = ACTION_LAYER_TOGGLE(2),     // to Numlock overlay
+    [1] = ACTION_FUNCTION(NUM_LOCK_ON),  // function to press NumLock key then activate layer 2
+    [2] = ACTION_FUNCTION(NUM_LOCK_OFF), // function to deactivate layer 2 then press NumLock key 
     [3] = ACTION_BACKLIGHT_DECREASE(),
     [4] = ACTION_BACKLIGHT_INCREASE(),
     [5] = ACTION_FUNCTION(VIDEO_INPUT),
@@ -142,20 +141,6 @@ const uint16_t PROGMEM fn_actions[] = {
     [10] = ACTION_FUNCTION(VIDEO_VOL_DOWN),
     [11] = ACTION_FUNCTION(VIDEO_POWER),
 };
-
-/*
- * Macro definition
- */
-const macro_t *action_get_macro(keyrecord_t *record, uint8_t id, uint8_t opt)
-{
-    switch (id) {
-        case NUM_LOCK:
-            return (record->event.pressed ?
-                    MACRO( I(50), D(NUMLOCK), U(NUMLOCK), D(FN2), END ) :
-                    MACRO( U(FN2), END ));
-    }
-    return MACRO_NONE;
-}
 
 /*
  * user defined action function
@@ -172,5 +157,26 @@ void action_function(keyrecord_t *record, uint8_t id, uint8_t opt)
         PORTA &= ~VIDEO_MASK;
         if (record->event.pressed)
             PORTA |= id & VIDEO_MASK;
+    }
+    else
+    {
+      switch (id) {
+          case NUM_LOCK_ON:
+              if (record->event.pressed)
+              {
+                  register_code(KC_NUMLOCK);
+                  unregister_code(KC_NUMLOCK);
+                  layer_on(2);
+              }
+              break;
+          case NUM_LOCK_OFF:
+              if (record->event.pressed)
+              {
+                  layer_off(2);
+                  register_code(KC_NUMLOCK);
+                  unregister_code(KC_NUMLOCK);
+              }
+              break;
+      }
     }
 }
