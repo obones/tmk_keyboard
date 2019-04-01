@@ -60,7 +60,7 @@ uint8_t matrix_cols(void)
     return MATRIX_COLS;
 }
 
-void matrix_setup(void)
+void matrix_init(void)
 {
     // initialize backligthing PWM
     backlight_init_ports();
@@ -68,10 +68,7 @@ void matrix_setup(void)
     // initialize Port A for video adapter control
     DDRA = 0b00000111;
     PORTA = 0b00000000;    
-}
-
-void matrix_init(void)
-{
+    
     // initialize row and col
     unselect_rows();
     init_cols();
